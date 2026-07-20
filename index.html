@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aravali Outdoors — Find your wild</title>
+<meta name="description" content="Camping, trekking and rappelling in the ancient Aravali hills. Your greatest adventure is closer than you think." />
+<link rel="icon" href="img/logo-favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#14100D;
+    --bg-2:#1C1712;
+    --panel:#221B14;
+    --rust:#C4562A;
+    --ember:#E7A24A;
+    --sand:#D8C3A5;
+    --fog:#93A08F;
+    --text:#F2EBE0;
+    --muted:#A2957F;
+    --line:rgba(216,195,165,.16);
+    --maxw:1240px;
+    --ease:cubic-bezier(.16,1,.3,1);
+    --display:"Anton",Impact,sans-serif;
+    --serif:"Fraunces",Georgia,serif;
+    --sans:"Inter",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--text);
+    font-family:var(--sans);font-size:17px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;overflow-x:clip;
+  }
+  img{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--rust);color:#fff}
+  :focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:2px}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,5vw,64px)}
+  .eyebrow{
+    font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--ember);font-weight:600;display:inline-flex;align-items:center;gap:.7em;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--ember);opacity:.7}
+  .display{font-family:var(--display);text-transform:uppercase;line-height:.9;letter-spacing:.01em;font-weight:400}
+
+  /* ---------- Intro loader ---------- */
+  #intro{
+    position:fixed;inset:0;z-index:1000;background:var(--bg);
+    display:grid;place-items:center;transition:opacity 1s var(--ease),visibility 1s;
+  }
+  #intro.gone{opacity:0;visibility:hidden;pointer-events:none}
+  #intro .glow{position:absolute;width:60vmax;height:60vmax;border-radius:50%;
+    background:radial-gradient(circle,rgba(196,86,42,.35),transparent 62%);
+    filter:blur(30px);animation:pulse 3s var(--ease) infinite}
+  #intro .brand{position:relative;text-align:center}
+  #intro .brand span{display:block;font-family:var(--display);text-transform:uppercase;
+    font-size:clamp(2.4rem,9vw,6rem);line-height:.86;
+    opacity:0;transform:translateY(28px);animation:rise .9s var(--ease) forwards}
+  #intro .brand span:nth-child(2){animation-delay:.16s;color:var(--rust)}
+  #intro .tag{margin-top:1.1rem;font-size:.74rem;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--muted);opacity:0;animation:fade 1s var(--ease) .7s forwards}
+  #intro .skip{position:absolute;bottom:34px;left:0;right:0;text-align:center;
+    font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);
+    opacity:0;animation:fade 1s ease 1.4s forwards;cursor:pointer}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @keyframes fade{to{opacity:1}}
+  @keyframes pulse{0%,100%{transform:scale(.9);opacity:.7}50%{transform:scale(1.05);opacity:1}}
+
+  /* ---------- Nav ---------- */
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:100;
+    transition:background .5s var(--ease),border-color .5s,backdrop-filter .5s;
+    border-bottom:1px solid transparent}
+  header.nav.solid{background:rgba(20,16,13,.82);backdrop-filter:blur(12px);border-bottom-color:var(--line)}
+  .nav-inner{max-width:var(--maxw);margin:0 auto;padding:16px clamp(20px,5vw,64px);
+    display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .logo{display:inline-flex;align-items:center;gap:.5em;font-family:var(--display);
+    text-transform:uppercase;font-size:clamp(1.4rem,1rem + 2vw,2.2rem);letter-spacing:.04em;color:var(--text)}
+  .brand-mark{height:1.5em;width:auto;display:block;flex:0 0 auto}
+  .logo b{color:var(--rust);font-weight:400;margin-left:.28em}
+  .foot-logo{display:inline-block;line-height:0}
+  .foot-logo img{width:260px;max-width:66vw;height:auto}
+  .nav-links{display:flex;align-items:center;gap:34px}
+  .nav-links a{font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);
+    position:relative;padding:4px 0}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:-2px;width:0;height:1px;
+    background:var(--ember);transition:width .4s var(--ease)}
+  .nav-links a:hover::after{width:100%}
+  .btn{display:inline-flex;align-items:center;gap:.6em;font-size:.8rem;letter-spacing:.12em;
+    text-transform:uppercase;font-weight:600;padding:.72em 1.35em;border-radius:100px;
+    background:var(--rust);color:#fff;border:1px solid var(--rust);
+    transition:transform .3s var(--ease),background .3s,color .3s;cursor:pointer}
+  .btn:hover{transform:translateY(-2px);background:var(--ember);border-color:var(--ember);color:#20160d}
+  .btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
+  .btn.ghost:hover{background:var(--text);color:var(--bg);border-color:var(--text)}
+  .nav-toggle{display:none;background:none;border:0;color:var(--text);cursor:pointer;padding:6px}
+  .nav-toggle svg{width:26px;height:26px}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;
+    overflow:hidden;padding-bottom:clamp(40px,7vh,90px)}
+  .hero-bg{position:absolute;inset:-8% 0 0 0;z-index:0;
+    background:#0d0a07 center/cover no-repeat;
+    background-image:url("img/DJI_0691-web.jpg");
+    transform:scale(1.08);animation:kb 22s ease-in-out infinite alternate;will-change:transform}
+  @keyframes kb{from{transform:scale(1.08) translateY(0)}to{transform:scale(1.16) translateY(-2%)}}
+  .hero-scrim{position:absolute;inset:0;z-index:1;
+    background:linear-gradient(180deg,rgba(20,16,13,.55) 0%,rgba(20,16,13,.15) 30%,rgba(20,16,13,.55) 72%,rgba(20,16,13,.96) 100%)}
+  #embers{position:absolute;inset:0;z-index:2;pointer-events:none}
+  .hero .wrap{position:relative;z-index:3;width:100%}
+  .hero h1{font-family:var(--display);text-transform:uppercase;
+    font-size:clamp(3.4rem,15vw,12rem);line-height:.84;letter-spacing:.01em;
+    text-shadow:0 6px 40px rgba(0,0,0,.5)}
+  .hero h1 .accent{color:var(--rust)}
+  .hero-lede{max-width:34ch;margin-top:1.4rem;color:#efe6d8;font-size:clamp(1rem,1.6vw,1.22rem)}
+  .hero-eyebrow{margin-bottom:1.6rem}
+  .hero-cta{margin-top:2.2rem;display:flex;gap:14px;flex-wrap:wrap}
+  .hero-foot{position:absolute;left:0;right:0;bottom:22px;z-index:3;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 clamp(20px,5vw,64px);color:var(--muted);font-size:.72rem;
+    letter-spacing:.22em;text-transform:uppercase}
+  .scrollcue{display:flex;align-items:center;gap:.8em}
+  .scrollcue .bar{width:1px;height:34px;background:linear-gradient(var(--ember),transparent);
+    position:relative;overflow:hidden}
+  .scrollcue .bar::after{content:"";position:absolute;top:-100%;left:0;width:100%;height:100%;
+    background:var(--ember);animation:drop 1.8s var(--ease) infinite}
+  @keyframes drop{0%{top:-100%}60%,100%{top:100%}}
+  .mute{background:rgba(0,0,0,.35);border:1px solid var(--line);color:var(--sand);
+    border-radius:100px;padding:.5em 1em;font-size:.68rem;letter-spacing:.2em;
+    text-transform:uppercase;cursor:pointer;display:inline-flex;gap:.6em;align-items:center}
+
+  /* ---------- Reveal ---------- */
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+
+  /* ---------- Manifesto ---------- */
+  .manifesto{padding:clamp(90px,15vh,180px) 0;position:relative;background:var(--bg)}
+  .manifesto .wrap{max-width:1080px}
+  .manifesto .eyebrow{margin-bottom:2.4rem}
+  .manifesto p{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(1.7rem,4.4vw,3.5rem);line-height:1.16;letter-spacing:-.01em;color:#f4ecdf}
+  .manifesto p em{color:var(--rust);font-style:italic}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:clamp(50px,8vh,90px);
+    border-top:1px solid var(--line);padding-top:44px}
+  .stat .num{font-family:var(--display);font-size:clamp(2.2rem,5vw,3.6rem);line-height:1;color:var(--sand)}
+  .stat .lbl{margin-top:.6em;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+
+  /* ---------- Activities ---------- */
+  .activities{padding:clamp(40px,6vh,80px) 0 clamp(20px,4vh,60px)}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+    padding-bottom:clamp(30px,5vh,60px);flex-wrap:wrap}
+  .sec-head h2{font-family:var(--display);text-transform:uppercase;
+    font-size:clamp(2.2rem,6vw,4.4rem);line-height:.9}
+  .sec-head p{color:var(--muted);max-width:36ch}
+  .act{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,72px);align-items:center;
+    padding:clamp(50px,9vh,110px) 0;border-top:1px solid var(--line)}
+  .act:nth-child(even) .act-media{order:2}
+  .act-media{position:relative;aspect-ratio:4/5;border-radius:4px;overflow:hidden}
+  .act-media img{width:100%;height:100%;object-fit:cover;transform:scale(1.04);
+    transition:transform 1.2s var(--ease);will-change:transform}
+  .act:hover .act-media img{transform:scale(1.11)}
+  .act-media .idx{position:absolute;top:18px;left:20px;font-family:var(--display);
+    font-size:2.2rem;color:var(--text);mix-blend-mode:difference;letter-spacing:.02em}
+  .act-body .kicker{font-size:.72rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ember);font-weight:600}
+  .act-body h3{font-family:var(--display);text-transform:uppercase;
+    font-size:clamp(2rem,5vw,3.4rem);line-height:.92;margin:.5rem 0 1rem}
+  .act-body p{color:#d8cdb9;max-width:44ch}
+  .act-meta{display:flex;gap:26px;margin-top:1.6rem;flex-wrap:wrap}
+  .act-meta span{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sand);
+    display:flex;align-items:center;gap:.55em}
+  .act-meta span::before{content:"";width:6px;height:6px;background:var(--rust);border-radius:50%}
+
+  /* ---------- Voices marquee ---------- */
+  .voices{padding:clamp(90px,15vh,170px) 0;background:linear-gradient(180deg,var(--bg),var(--bg-2))}
+  .voices .wrap{margin-bottom:clamp(34px,6vh,60px)}
+  .marquee{position:relative;display:flex;flex-direction:column;gap:22px;padding:22px 0;overflow-x:clip;overflow-y:visible}
+  .marquee::before,.marquee::after{content:"";position:absolute;top:0;bottom:0;width:14vw;max-width:220px;z-index:4;pointer-events:none}
+  .marquee::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
+  .marquee::after{right:0;background:linear-gradient(270deg,var(--bg-2),transparent)}
+  .track{display:flex;gap:22px;width:max-content;will-change:transform}
+  .track.left{animation:scrollL 46s linear infinite}
+  .track.right{animation:scrollR 52s linear infinite}
+  .marquee:hover .track{animation-play-state:paused}
+  @keyframes scrollL{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @keyframes scrollR{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+  .vcard{position:relative;flex:0 0 auto;width:clamp(280px,34vw,420px);aspect-ratio:16/11;
+    border-radius:6px;overflow:hidden;transition:transform .55s var(--ease),box-shadow .55s;
+    box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .vcard img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+  .vcard .grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,16,13,.05) 30%,rgba(20,16,13,.85))}
+  .vcard .quote{position:absolute;left:0;right:0;bottom:0;padding:22px;z-index:2}
+  .vcard .quote p{font-family:var(--serif);font-style:italic;font-size:1.12rem;line-height:1.32;color:#fff;
+    text-shadow:0 2px 14px rgba(0,0,0,.5)}
+  .vcard .quote .who{margin-top:.8em;font-family:var(--sans);font-style:normal;font-size:.7rem;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--ember)}
+  .marquee:hover .vcard{opacity:.5}
+  .vcard:hover{transform:scale(1.14);z-index:6;box-shadow:0 26px 60px rgba(0,0,0,.6);opacity:1!important}
+  .vcard:hover img{transform:scale(1.06)}
+
+  /* ---------- Featured adventures ---------- */
+  .adventures{padding:clamp(90px,15vh,170px) 0}
+  .adv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:clamp(30px,5vh,56px)}
+  .adv{position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+    background:var(--panel);transition:transform .5s var(--ease),border-color .5s}
+  .adv:hover{transform:translateY(-6px);border-color:rgba(231,162,74,.5)}
+  .adv-img{aspect-ratio:3/2;overflow:hidden}
+  .adv-img img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+  .adv:hover .adv-img img{transform:scale(1.08)}
+  .adv-tier{position:absolute;top:14px;left:14px;background:rgba(20,16,13,.7);backdrop-filter:blur(6px);
+    border:1px solid var(--line);border-radius:100px;padding:.4em .9em;font-size:.66rem;
+    letter-spacing:.18em;text-transform:uppercase;color:var(--ember)}
+  .adv-body{padding:24px 24px 28px}
+  .adv-body h3{font-family:var(--display);text-transform:uppercase;font-size:1.7rem;line-height:.95;margin-bottom:.5rem}
+  .adv-body p{color:var(--muted);font-size:.95rem;min-height:3.6em}
+  .adv-facts{display:flex;justify-content:space-between;margin:18px 0 20px;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
+  .adv-facts div{text-align:center}
+  .adv-facts .k{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .adv-facts .v{font-family:var(--sans);font-weight:600;color:var(--sand);margin-top:3px;font-size:.92rem}
+  .adv .btn{width:100%;justify-content:center}
+
+  /* ---------- Contact ---------- */
+  .contact{position:relative;overflow:hidden;padding:clamp(90px,15vh,170px) 0;background:var(--bg-2)}
+  .contact-bg{position:absolute;inset:0;z-index:0;opacity:.22;background:center/cover no-repeat;
+    background-image:url("https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=2000&q=80")}
+  .contact-scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,var(--bg-2),rgba(28,23,18,.7))}
+  .contact .wrap{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,80px);align-items:center}
+  .contact h2{font-family:var(--display);text-transform:uppercase;font-size:clamp(2.4rem,6.5vw,5rem);line-height:.9;margin:1rem 0 1.2rem}
+  .contact .lede{color:#d8cdb9;max-width:40ch;margin-bottom:1.8rem}
+  .contact .wa{margin-top:1.4rem}
+  form{background:rgba(20,16,13,.55);border:1px solid var(--line);border-radius:8px;padding:clamp(22px,3vw,34px);backdrop-filter:blur(8px)}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,.04);
+    border:1px solid var(--line);border-radius:5px;color:var(--text);font:inherit;font-size:.95rem;
+    padding:.8em .9em;transition:border-color .3s}
+  .field textarea{resize:vertical;min-height:92px}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--ember)}
+  .field select{appearance:none;cursor:pointer}
+  form .btn{width:100%;justify-content:center;margin-top:6px}
+  .form-note{margin-top:14px;font-size:.78rem;color:var(--fog);text-align:center;min-height:1.2em}
+
+  /* ---------- Footer ---------- */
+  footer{border-top:1px solid var(--line);padding:clamp(50px,8vh,80px) 0 40px;background:var(--bg)}
+  .foot-top{display:flex;justify-content:space-between;gap:34px;flex-wrap:wrap;padding-bottom:44px;border-bottom:1px solid var(--line)}
+  .foot-brand .logo{font-size:1.5rem;margin-bottom:1rem}
+  .foot-brand p{color:var(--muted);max-width:34ch}
+  .foot-cols{display:flex;gap:clamp(34px,6vw,90px);flex-wrap:wrap}
+  .foot-col h4{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--sand);margin-bottom:16px}
+  .foot-col a{display:block;color:var(--muted);font-size:.92rem;padding:5px 0;transition:color .3s}
+  .foot-col a:hover{color:var(--ember)}
+  .foot-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:28px;
+    color:var(--muted);font-size:.76rem;letter-spacing:.06em}
+  .foot-credit{text-align:center;margin-top:22px;color:var(--muted);font-size:.74rem;letter-spacing:.08em}
+  .foot-credit span{color:var(--sand)}
+  .contour{display:block;width:100%;height:auto;color:var(--rust);opacity:.5}
+
+  /* ---------- Responsive ---------- */
+  @media(max-width:900px){
+    .nav-links{display:none}
+    .nav-toggle{display:block}
+    header.nav.open .nav-links{display:flex;position:absolute;top:100%;left:0;right:0;
+      flex-direction:column;gap:0;background:rgba(20,16,13,.97);backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);padding:8px 0}
+    header.nav.open .nav-links a{padding:15px clamp(20px,5vw,64px)}
+    header.nav.open .nav-links .btn{margin:12px clamp(20px,5vw,64px)}
+    .act{grid-template-columns:1fr;gap:24px}
+    .act:nth-child(even) .act-media{order:0}
+    .act-media{aspect-ratio:16/11}
+    .stats{grid-template-columns:1fr 1fr;gap:30px 20px}
+    .adv-grid{grid-template-columns:1fr}
+    .contact .wrap{grid-template-columns:1fr}
+    .vcard{width:78vw}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms!important;animation-iteration-count:1!important;
+      transition-duration:.001ms!important;scroll-behavior:auto!important}
+    .track.left,.track.right{animation:none}
+    .hero-bg{animation:none;transform:scale(1.05)}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- Intro loader -->
+<div id="intro" aria-hidden="true">
+  <div class="glow"></div>
+  <div class="brand">
+    <span>Aravali</span><span>Outdoors</span>
+  </div>
+  <div class="tag">India's oldest range · your newest habit</div>
+  <div class="skip" id="skip">Enter →</div>
+</div>
+
+<!-- Nav -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="logo" aria-label="Aravali Outdoors home">
+      <img class="brand-mark" src="img/logo-icon-dark.png" alt="" /><span>Aravali<b>Outdoors</b></span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#activities">Activities</a>
+      <a href="#voices">Voices</a>
+      <a href="#adventures">Adventures</a>
+      <a href="#contact" class="btn">Plan a trip</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg" id="heroBg"></div>
+    <div class="hero-scrim"></div>
+    <canvas id="embers"></canvas>
+    <div class="wrap">
+      <span class="eyebrow hero-eyebrow">The Aravalis · North India</span>
+      <h1 class="display">Find your<br><span class="accent">wild</span></h1>
+      <p class="hero-lede">Camping, trekking and rappelling in hills three billion years in the making — no passport, no long-haul. Just the outdoors on your doorstep.</p>
+      <div class="hero-cta">
+        <a href="#activities" class="btn">See the activities</a>
+        <a href="#contact" class="btn ghost">Plan your trip</a>
+      </div>
+    </div>
+    <div class="hero-foot">
+      <div class="scrollcue"><span class="bar"></span> Scroll to begin</div>
+      <button class="mute" id="mute" aria-pressed="false">
+        <span id="muteIcon">✦</span> Embers on
+      </button>
+    </div>
+  </section>
+
+  <!-- Manifesto -->
+  <section class="manifesto">
+    <div class="wrap reveal">
+      <span class="eyebrow">The idea</span>
+      <p>You don't need another continent. You need a free weekend, a pair of boots, and a range that's been <em>waiting here for three billion years</em>. Adventure was never far. We just stopped looking close.</p>
+      <div class="stats">
+        <div class="stat reveal d1"><div class="num" data-count="1200" data-suffix="+">0</div><div class="lbl">Adventurers guided</div></div>
+        <div class="stat reveal d1"><div class="num" data-count="38">0</div><div class="lbl">Routes mapped</div></div>
+        <div class="stat reveal d2"><div class="num" data-count="9">0</div><div class="lbl">Base camps</div></div>
+        <div class="stat reveal d2"><div class="num">4.9★</div><div class="lbl">Average trip rating</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activities -->
+  <section class="activities" id="activities">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 class="display">Four ways<br>to get out</h2>
+        <p>Pick a weekend. Pick your terrain. We handle the gear, the guides and the getting-there.</p>
+      </div>
+
+      <article class="act reveal">
+        <div class="act-media">
+          <img src="img/C2.jpeg" alt="Tents pitched on an Aravali hilltop at sunset above a sea of clouds" loading="lazy">
+          <span class="idx display">01</span>
+        </div>
+        <div class="act-body">
+          <span class="kicker">Camping</span>
+          <h3 class="display">Sleep under an open sky</h3>
+          <p>Pitch on a ridge as the light drops, cook over a fire, and wake to fog rolling off the valley. Our camps are small, quiet and left exactly as we found them.</p>
+          <div class="act-meta"><span>Beginner friendly</span><span>Gear included</span><span>Overnight</span></div>
+        </div>
+      </article>
+
+      <article class="act reveal">
+        <div class="act-media">
+          <img src="img/activity-trekking-web.jpg" alt="A group trekking up misty green Aravali hills with backpacks" loading="lazy">
+          <span class="idx display">02</span>
+        </div>
+        <div class="act-body">
+          <span class="kicker">Trekking</span>
+          <h3 class="display">Walk the ancient ridgelines</h3>
+          <p>Follow old shepherd trails through dry forest and granite. Half-day strolls to lung-testing climbs — every route is scouted, graded and led by someone who knows the range by heart.</p>
+          <div class="act-meta"><span>All fitness levels</span><span>Guided</span><span>Half & full day</span></div>
+        </div>
+      </article>
+
+      <article class="act reveal">
+        <div class="act-media">
+          <img src="img/rappeling-web.jpg" alt="A rappeller descending a granite cliff in the Aravali hills" loading="lazy">
+          <span class="idx display">03</span>
+        </div>
+        <div class="act-body">
+          <span class="kicker">Rappelling</span>
+          <h3 class="display">Trust the rope, read the rock</h3>
+          <p>Step backwards off a cliff for the first time with certified instructors, double-checked anchors and gear you can count on. Fear optional. Grin guaranteed.</p>
+          <div class="act-meta"><span>No experience needed</span><span>Certified instructors</span><span>Day trip</span></div>
+        </div>
+      </article>
+
+      <article class="act reveal">
+        <div class="act-media">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80" alt="A tent glowing beneath a sky full of stars" loading="lazy">
+          <span class="idx display">04</span>
+        </div>
+        <div class="act-body">
+          <span class="kicker">Night camps</span>
+          <h3 class="display">When the range turns to stars</h3>
+          <p>Away from the city glow, the Aravalis go properly dark. Stargazing, night walks and slow conversations around the fire — the part of the trip everyone remembers.</p>
+          <div class="act-meta"><span>Stargazing</span><span>Bonfire</span><span>Overnight</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Voices marquee -->
+  <section class="voices" id="voices">
+    <div class="wrap reveal">
+      <span class="eyebrow">Voices from the trail</span>
+      <div class="sec-head" style="padding-bottom:0">
+        <h2 class="display">People who<br>went local</h2>
+        <p>Hover any photo to hold it still. These are the folks who swapped the airport for the Aravalis.</p>
+      </div>
+    </div>
+    <div class="marquee" id="m1"><div class="track left" data-dup></div></div>
+    <div class="marquee" id="m2"><div class="track right" data-dup></div></div>
+  </section>
+
+  <!-- Featured adventures -->
+  <section class="adventures" id="adventures">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 class="display">Featured<br>adventures</h2>
+        <p>Three ready-to-book weekends. Or tell us what you want and we'll build it around you.</p>
+      </div>
+      <div class="adv-grid">
+        <article class="adv reveal">
+          <div class="adv-img"><img src="https://images.unsplash.com/photo-1445308394109-4ec2920981b1?auto=format&fit=crop&w=900&q=80" alt="Tents pitched at a ridge base camp" loading="lazy"></div>
+          <span class="adv-tier">Most popular</span>
+          <div class="adv-body">
+            <h3 class="display">Ridge Base Camp</h3>
+            <p>Trek in, pitch on the ridge, and let the fire and the stars do the rest.</p>
+            <div class="adv-facts">
+              <div><div class="k">Duration</div><div class="v">2D · 1N</div></div>
+              <div><div class="k">Level</div><div class="v">Easy</div></div>
+              <div><div class="k">From</div><div class="v">₹4,500</div></div>
+            </div>
+            <a href="#contact" class="btn">Enquire</a>
+          </div>
+        </article>
+
+        <article class="adv reveal d1">
+          <div class="adv-img"><img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=900&q=80" alt="Hikers reaching a summit at sunrise" loading="lazy"></div>
+          <span class="adv-tier">Early start</span>
+          <div class="adv-body">
+            <h3 class="display">Sunrise Summit Trek</h3>
+            <p>A pre-dawn climb to catch first light spilling across the range.</p>
+            <div class="adv-facts">
+              <div><div class="k">Duration</div><div class="v">1 Day</div></div>
+              <div><div class="k">Level</div><div class="v">Moderate</div></div>
+              <div><div class="k">From</div><div class="v">₹2,200</div></div>
+            </div>
+            <a href="#contact" class="btn">Enquire</a>
+          </div>
+        </article>
+
+        <article class="adv reveal d2">
+          <div class="adv-img"><img src="https://images.unsplash.com/photo-1601224335112-b5b9b3f4d8f4?auto=format&fit=crop&w=900&q=80" alt="A person rappelling down a cliff face" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1522163182402-834f871fd851?auto=format&fit=crop&w=900&q=80'"></div>
+          <span class="adv-tier">Adrenaline</span>
+          <div class="adv-body">
+            <h3 class="display">Cliff &amp; Rope Day</h3>
+            <p>Learn to rappel from scratch and descend a real face by afternoon.</p>
+            <div class="adv-facts">
+              <div><div class="k">Duration</div><div class="v">1 Day</div></div>
+              <div><div class="k">Level</div><div class="v">Beginner</div></div>
+              <div><div class="k">From</div><div class="v">₹2,800</div></div>
+            </div>
+            <a href="#contact" class="btn">Enquire</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="contact">
+    <div class="contact-bg"></div>
+    <div class="contact-scrim"></div>
+    <div class="wrap">
+      <div class="reveal">
+        <span class="eyebrow">Plan your adventure</span>
+        <h2 class="display">Let's get<br>you out there</h2>
+        <p class="lede">Tell us what you're after and roughly when. We'll come back within a day with a plan, a date and a price — no obligation.</p>
+        <a class="btn ghost wa" href="https://wa.me/919999999999?text=Hi%20Aravali%20Outdoors%2C%20I%27d%20like%20to%20plan%20a%20trip" target="_blank" rel="noopener">Chat on WhatsApp</a>
+      </div>
+      <form id="enquiry" novalidate>
+        <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
+        <div class="field"><label for="email">Email or phone</label><input id="email" name="email" type="text" autocomplete="email" required></div>
+        <div class="field"><label for="activity">What sounds good?</label>
+          <select id="activity" name="activity">
+            <option>Camping</option><option>Trekking</option><option>Rappelling</option>
+            <option>Night camp / stargazing</option><option>Not sure — surprise me</option>
+          </select>
+        </div>
+        <div class="field"><label for="msg">Anything else?</label><textarea id="msg" name="msg" placeholder="Group size, dates, fitness…"></textarea></div>
+        <button class="btn" type="submit">Send enquiry</button>
+        <div class="form-note" id="formNote" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="wrap">
+    <svg class="contour" viewBox="0 0 1200 60" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+      <path d="M0 45 Q150 20 300 38 T600 32 T900 40 T1200 30" opacity=".8"/>
+      <path d="M0 52 Q150 30 300 46 T600 42 T900 50 T1200 40" opacity=".5"/>
+      <path d="M0 38 Q150 12 300 30 T600 22 T900 32 T1200 20" opacity=".3"/>
+    </svg>
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a href="#top" class="foot-logo"><img src="img/logo-full-dark.png" alt="Aravali Outdoors — ancient trails, endless adventures" /></a>
+        <p>Small-group outdoor adventures in the ancient Aravali hills. Get out more.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col"><h4>Explore</h4>
+          <a href="#activities">Activities</a><a href="#voices">Voices</a><a href="#adventures">Adventures</a><a href="#contact">Plan a trip</a>
+        </div>
+        <div class="foot-col"><h4>Follow</h4>
+          <a href="#" onclick="return false">Instagram</a><a href="#" onclick="return false">Strava club</a><a href="#" onclick="return false">YouTube</a>
+        </div>
+        <div class="foot-col"><h4>Say hi</h4>
+          <a href="mailto:hello@aravalioutdoors.in">hello@aravalioutdoors.in</a><a href="https://wa.me/919999999999" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yr"></span> Aravali Outdoors. Tread lightly.</span>
+      <span>Leave no trace · Terms · Privacy</span>
+    </div>
+    <div class="foot-credit">Tech by <span>Rajasthan Pixel Studio</span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Intro */
+  var intro = document.getElementById("intro");
+  function dismiss(){ if(intro){ intro.classList.add("gone"); document.body.style.overflow=""; } }
+  document.body.style.overflow = intro ? "hidden" : "";
+  document.getElementById("skip").addEventListener("click", dismiss);
+  window.addEventListener("wheel", dismiss, {once:true, passive:true});
+  window.addEventListener("touchmove", dismiss, {once:true, passive:true});
+  setTimeout(dismiss, reduce ? 200 : 2600);
+
+  /* Nav scroll state + mobile toggle */
+  var nav = document.getElementById("nav");
+  function onScroll(){ nav.classList.toggle("solid", window.scrollY > 40); }
+  onScroll(); window.addEventListener("scroll", onScroll, {passive:true});
+  var toggle = document.getElementById("navToggle");
+  toggle.addEventListener("click", function(){
+    var open = nav.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", open);
+  });
+  document.querySelectorAll(".nav-links a").forEach(function(a){
+    a.addEventListener("click", function(){ nav.classList.remove("open"); toggle.setAttribute("aria-expanded","false"); });
+  });
+
+  /* Reveal on scroll (with safety fallback so content is never stuck hidden) */
+  var reveals = document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, {threshold:.16, rootMargin:"0px 0px -8% 0px"});
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add("in"); });
+  }
+
+  /* Count-up */
+  function countUp(el){
+    var target = +el.dataset.count, suffix = el.dataset.suffix || "", dur = 1400, start = null;
+    if(reduce){ el.textContent = target + suffix; return; }
+    function step(t){
+      if(!start) start = t;
+      var p = Math.min((t-start)/dur, 1), val = Math.floor((1-Math.pow(1-p,3))*target);
+      el.textContent = val.toLocaleString() + suffix;
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var statIO = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ countUp(e.target); statIO.unobserve(e.target); } });
+  }, {threshold:.6});
+  document.querySelectorAll(".num[data-count]").forEach(function(el){ statIO.observe(el); });
+
+  /* Hero parallax */
+  var heroBg = document.getElementById("heroBg");
+  if(!reduce){
+    window.addEventListener("scroll", function(){
+      var y = window.scrollY;
+      if(y < window.innerHeight) heroBg.style.transform = "scale(1.12) translateY(" + (y*0.18) + "px)";
+    }, {passive:true});
+  }
+
+  /* Voices marquee — build cards, duplicate for seamless loop */
+  var voices = [
+    {img:"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80", q:"First time I'd ever slept on a ridge. Won't be the last.", who:"Aarav · Ridge Base Camp"},
+    {img:"https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&q=80", q:"Stepped off a cliff and somehow trusted the rope. Buzzing for days.", who:"Meher · Cliff & Rope Day"},
+    {img:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80", q:"Two hours from home and it felt like another planet.", who:"Kabir · Sunrise Summit"},
+    {img:"https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&q=80", q:"The guides made my mum feel safe on her first trek at 58.", who:"Ishani · Trekking"},
+    {img:"https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=800&q=80", q:"Never seen that many stars in my life. Actually gasped.", who:"Rohan · Night Camp"},
+    {img:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80", q:"Booked as a team offsite. Everyone came back different.", who:"Priya · Group trek"}
+  ];
+  function card(v){
+    return '<figure class="vcard"><img src="'+v.img+'" alt="" loading="lazy">'
+      + '<div class="grad"></div><figcaption class="quote"><p>&ldquo;'+v.q+'&rdquo;</p>'
+      + '<span class="who">'+v.who+'</span></figcaption></figure>';
+  }
+  function fill(trackId, arr){
+    var t = document.querySelector(trackId + " .track");
+    var html = arr.map(card).join("");
+    t.innerHTML = html + html; /* duplicate => -50% loop is seamless */
+  }
+  fill("#m1", voices);
+  fill("#m2", voices.slice().reverse());
+
+  /* Ember particles */
+  var canvas = document.getElementById("embers");
+  var hero = canvas.parentElement;
+  var ctx = canvas.getContext("2d");
+  var embersOn = !reduce, W, H, parts = [], raf;
+  function size(){ W = canvas.width = hero.offsetWidth; H = canvas.height = hero.offsetHeight; }
+  function seed(){
+    parts = [];
+    var n = Math.round(Math.min(70, W/22));
+    for(var i=0;i<n;i++) parts.push(spark(true));
+  }
+  function spark(init){
+    return {
+      x: Math.random()*W,
+      y: init ? Math.random()*H : H + 10,
+      r: Math.random()*2.2 + 0.6,
+      vy: -(Math.random()*0.5 + 0.25),
+      vx: (Math.random()-0.5)*0.35,
+      a: Math.random()*0.5 + 0.2,
+      drift: Math.random()*Math.PI*2
+    };
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<parts.length;i++){
+      var p = parts[i];
+      p.drift += 0.01;
+      p.y += p.vy; p.x += p.vx + Math.sin(p.drift)*0.25;
+      if(p.y < -10){ parts[i] = spark(false); continue; }
+      var g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+      g.addColorStop(0,"rgba(231,162,74,"+p.a+")");
+      g.addColorStop(1,"rgba(196,86,42,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2); ctx.fill();
+    }
+    raf = requestAnimationFrame(draw);
+  }
+  function startEmbers(){ if(raf) cancelAnimationFrame(raf); size(); seed(); draw(); }
+  function stopEmbers(){ if(raf) cancelAnimationFrame(raf); raf=null; ctx.clearRect(0,0,W,H); }
+  if(embersOn) startEmbers();
+  window.addEventListener("resize", function(){ if(embersOn){ size(); seed(); } });
+
+  /* Mute / toggle embers */
+  var muteBtn = document.getElementById("mute");
+  muteBtn.addEventListener("click", function(){
+    embersOn = !embersOn;
+    muteBtn.setAttribute("aria-pressed", String(!embersOn));
+    muteBtn.innerHTML = embersOn ? '<span>✦</span> Embers on' : '<span>✧</span> Embers off';
+    if(embersOn) startEmbers(); else stopEmbers();
+  });
+
+  /* Enquiry form */
+  var form = document.getElementById("enquiry");
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var note = document.getElementById("formNote");
+    var name = form.name.value.trim(), contact = form.email.value.trim();
+    if(!name || !contact){ note.style.color = "var(--ember)"; note.textContent = "Add your name and a way to reach you."; return; }
+    note.style.color = "var(--fog)";
+    note.textContent = "Thanks, " + name.split(" ")[0] + " — we'll be in touch within a day.";
+    form.reset();
+  });
+
+  /* Year */
+  document.getElementById("yr").textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
