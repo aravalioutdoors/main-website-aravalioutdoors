@@ -719,6 +719,7 @@
     if(!name || !contact){ note.style.color = "var(--ember)"; note.textContent = "Add your name and a way to reach you."; return; }
     note.style.color = "var(--fog)";
     note.textContent = "Thanks, " + name.split(" ")[0] + " — we'll be in touch within a day.";
+    if (window.track) window.track("enquiry_submit", { activity: form.activity.value });
     form.reset();
   });
 
@@ -726,5 +727,8 @@
   document.getElementById("yr").textContent = new Date().getFullYear();
 })();
 </script>
+<!-- Analytics: Vercel Web Analytics (auto pageviews) + custom events -->
+<script defer src="/_vercel/insights/script.js"></script>
+<script defer src="assets/analytics.js"></script>
 </body>
 </html>
